@@ -41,13 +41,13 @@ const Books = () => {
       <div>
         <input
           type="text"
-          placeholder="Title"
+          placeholder="Title of the Book"
           value={newBook.title}
           onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
         />
         <input
           type="text"
-          placeholder="Author"
+          placeholder="Author of the Book"
           value={newBook.author}
           onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
         />
