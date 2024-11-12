@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { returnBook } from "@/components/bookService";
+import Link from "next/link";
 
 const ReturnBook = () => {
   const [bookId, setBookId] = useState("");
@@ -19,6 +20,12 @@ const ReturnBook = () => {
         onChange={(e) => setBookId(e.target.value)}
       />
       <button onClick={handleReturn}>Return Book</button>
+      <div>
+          <Link href="/borrow" passHref>
+            <button style={{ marginTop: "10px" }}>Go to Borrow Page</button>
+          </Link>
+      </div>
+      
     </div>
   );
 };
