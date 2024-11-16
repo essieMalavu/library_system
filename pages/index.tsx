@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { returnBook } from "@/components/bookService";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
 const ReturnBook = () => {
   const [bookId, setBookId] = useState("");
@@ -12,6 +13,8 @@ const ReturnBook = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+
+      <Navbar/>
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Return a Book</h1>
         
