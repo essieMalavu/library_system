@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { useState } from 'react';
+import Link from "next/link";
+import { useState } from "react";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +12,12 @@ const Navbar: React.FC = () => {
     <nav className="bg-blue-600 text-white fixed w-full z-10 top-0 shadow">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
-        <Link href="/" passHref
-           className="text-xl font-bold hover:opacity-80">Library System
+        <Link
+          href="/"
+          passHref
+          className="text-xl font-bold hover:opacity-80"
+        >
+          Library System
         </Link>
 
         {/* Mobile Menu Button */}
@@ -58,22 +62,37 @@ const Navbar: React.FC = () => {
         {/* Navbar Links */}
         <div
           className={`flex-col md:flex-row md:flex md:items-center md:space-x-6 absolute md:static top-16 md:top-auto left-0 w-full md:w-auto bg-blue-600 md:bg-transparent ${
-            isOpen ? 'flex' : 'hidden'
+            isOpen ? "flex" : "hidden"
           }`}
         >
-          <Link href="/books" passHref
-             className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent">
-              Manage Books
-            
+          <Link
+            href="/books"
+            passHref
+            className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent"
+          >
+            Manage Books
           </Link>
-          <Link href="/borrow" passHref
-            className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent">
-              Borrow a Book
-            
+          <Link
+            href="/borrow"
+            passHref
+            className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent"
+          >
+            Borrow a Book
           </Link>
-          <Link href="/return" passHref
-             className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent">
-              Return a Book
+          <Link
+            href="/return"
+            passHref
+            className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent"
+          >
+            Return a Book
+          </Link>
+          {/* Login Button */}
+          <Link
+            href="/login"
+            passHref
+            className="block px-4 py-2 md:p-0 bg-white text-blue-600 font-bold rounded-md hover:bg-gray-100 md:hover:bg-transparent md:hover:text-white"
+          >
+            Login
           </Link>
         </div>
       </div>
