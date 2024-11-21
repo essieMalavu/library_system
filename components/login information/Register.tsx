@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link"; // Import Link
 import { auth, db } from "@/firebase/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -17,20 +18,15 @@ const Register = () => {
     setError(null);
 
     try {
-      // Create the user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-      // Get the user's UID
       const userId = userCredential.user.uid;
 
-      // Save user details in Firestore
       await setDoc(doc(db, "users", userId), {
         uid: userId,
         email,
         createdAt: new Date().toISOString(),
       });
 
-      // Redirect to login on success
       router.push("/login");
     } catch (err: any) {
       console.error("Error registering user:", err);
@@ -81,23 +77,43 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 px-4 text-white font-semibold rounded-md ${
+            className={`w-full flex justify-center items-center py-2 px-4 text-white font-semibold rounded-md ${
               loading
                 ? "bg-indigo-400 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
             }`}
           >
-            {loading ? "Registering..." : "Register"}
+            {loading ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 100 8v4a8 8 0 01-8-8z"
+                ></path>
+              </svg>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
         <p className="text-sm text-center text-gray-600 mt-4">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-indigo-600 hover:underline font-medium"
-          >
+          <Link href="/login" className="text-indigo-600 hover:underline font-medium">
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>

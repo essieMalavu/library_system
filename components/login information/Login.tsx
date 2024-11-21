@@ -18,7 +18,7 @@ const Login = () => {
     try {
       // Authenticate the user with Firebase
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard"); // Redirect to dashboard on success
+      router.push("/"); // Redirect to dashboard on success
     } catch (err: any) {
       console.error("Login error:", err);
       setError("Invalid email or password. Please try again.");

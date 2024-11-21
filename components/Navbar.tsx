@@ -1,11 +1,30 @@
 import Link from "next/link";
 import { useState } from "react";
+import { getAuth, signOut } from "firebase/auth";
+import { useRouter } from "next/router";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      alert("Failed to log out. Please try again.");
+    }
   };
 
   return (
@@ -86,14 +105,33 @@ const Navbar: React.FC = () => {
           >
             Return a Book
           </Link>
-          {/* Login Button */}
-          <Link
-            href="/login"
-            passHref
-            className="block px-4 py-2 md:p-0 bg-white text-blue-600 font-bold rounded-md hover:bg-gray-100 md:hover:bg-transparent md:hover:text-white"
-          >
-            Login
-          </Link>
+
+          {/* Dropdown Menu */}
+          <div className="relative">
+            <button
+              onClick={toggleDropdown}
+              className="block px-4 py-2 bg-white text-blue-600 font-bold rounded-md hover:bg-gray-100 md:hover:bg-transparent md:hover:text-white"
+            >
+              Account
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
+                <Link
+                  href="/login"
+                  passHref
+                  className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200"
+                >
+                  Login
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-200"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>
