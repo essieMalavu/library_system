@@ -1,12 +1,22 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useState } from "react";
-import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user); // Set login status based on user authentication state
+    });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
+  }, [auth]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -17,13 +27,21 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    const auth = getAuth();
     try {
       await signOut(auth);
       router.push("/login");
     } catch (error) {
       console.error("Error logging out:", error);
       alert("Failed to log out. Please try again.");
+    }
+  };
+
+  const handleProtectedNavigation = (path: string) => {
+    if (isLoggedIn) {
+      router.push(path); // Navigate to the target path if logged in
+    } else {
+      alert("Please log in to access this page.");
+      router.push("/login"); // Redirect to login page if not logged in
     }
   };
 
@@ -84,27 +102,24 @@ const Navbar: React.FC = () => {
             isOpen ? "flex" : "hidden"
           }`}
         >
-          <Link
-            href="/books"
-            passHref
+          <button
+            onClick={() => handleProtectedNavigation("/books")}
             className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent"
           >
             Manage Books
-          </Link>
-          <Link
-            href="/borrow"
-            passHref
+          </button>
+          <button
+            onClick={() => handleProtectedNavigation("/borrow")}
             className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent"
           >
             Borrow a Book
-          </Link>
-          <Link
-            href="/return"
-            passHref
+          </button>
+          <button
+            onClick={() => handleProtectedNavigation("/return")}
             className="block px-4 py-2 md:p-0 hover:bg-blue-500 md:hover:bg-transparent"
           >
             Return a Book
-          </Link>
+          </button>
 
           {/* Dropdown Menu */}
           <div className="relative">
@@ -116,19 +131,22 @@ const Navbar: React.FC = () => {
             </button>
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
-                <Link
-                  href="/login"
-                  passHref
-                  className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200"
-                >
-                  Login
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-200"
-                >
-                  Logout
-                </button>
+                {isLoggedIn ? (
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-200"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    passHref
+                    className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200"
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             )}
           </div>
