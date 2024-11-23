@@ -1,41 +1,25 @@
 import { useState, useEffect } from "react";
-import { returnBook } from "@/components/bookService";
-import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
 
-const ReturnBook = () => {
-  const [bookId, setBookId] = useState("");
-  const [loading, setLoading] = useState(true); // For loading state
+const HomePage = () => {
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // Redirect to login if not logged in
         router.push("/login");
       } else {
-        setLoading(false); // Set loading to false if user is logged in
+        setLoading(false);
       }
     });
 
-    return () => unsubscribe(); // Clean up the listener
+    return () => unsubscribe();
   }, [router]);
 
-  const handleReturn = async () => {
-    try {
-      const result = await returnBook(bookId);
-      alert(result);
-    } catch (error) {
-      console.error("Failed to return book:", error);
-      alert("Error returning the book. Please try again.");
-    }
-  };
-
   if (loading) {
-    // Display a loading state while checking authentication
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <p>Loading...</p>
@@ -43,37 +27,71 @@ const ReturnBook = () => {
     );
   }
 
+  // Insights data
+  const insights = [
+    {
+      title: "Manage Books",
+      description:
+        "Easily add, update, and organize your book collection for seamless management.",
+      image: "/images/manage-books.jpg",
+    },
+    {
+      title: "Borrow a Book",
+      description:
+        "Enable users to borrow books effortlessly with real-time tracking and history.",
+      image: "/images/borrow-books.jpg",
+    },
+    {
+      title: "Return a Book",
+      description:
+        "Simplify the return process with automated updates and notifications.",
+      image: "/images/return.jpg",
+    },
+    // {
+    //   title: "User Profiles",
+    //   description:
+    //     "Manage user accounts with detailed borrowing history and account settings.",
+    //   image: "/images/user-profiles.jpg",
+    // },
+  ];
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Navbar />
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-          Return a Book
-        </h1>
+    <div
+      className="flex flex-col items-center opacity-40 justify-center min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/books.jpg')" }}
+    >
+      <h1 className="text-4xl font-bold text-white mb-8 bg-opacity-50 p-4 rounded">
+        Welcome to Library System
+      </h1>
+      <div className="grid grid-cols-1 opacity-70 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+        {insights.map((insight, index) => (
+          <div
+            key={index}
+            className="relative group w-80 h-60 bg-gray-100 rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
+          >
+            {/* Insight Background */}
+            <div
+              className="absolute inset-0 bg-cover bg-center  group-hover:opacity-90 transition-opacity"
+              style={{ backgroundImage: `url('${insight.image}')` }}
+            ></div>
 
-        <input
-          type="text"
-          placeholder="Enter Book ID"
-          value={bookId}
-          onChange={(e) => setBookId(e.target.value)}
-          className="w-full px-4 text-black py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+            {/* Insight Overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-50 group-hover:bg-opacity-70 transition-all duration-300"></div>
 
-        <button
-          onClick={handleReturn}
-          className="w-full py-2 mb-4 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 transition-colors"
-        >
-          Return Book
-        </button>
-
-        <Link href="/borrow" passHref>
-          <button className="w-full py-2 bg-gray-500 text-white font-bold rounded-md hover:bg-gray-600 transition-colors">
-            Go to Borrow Page
-          </button>
-        </Link>
+            {/* Insight Content */}
+            <div className="relative flex flex-col items-center justify-center h-full p-4 text-white text-center">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-2xl transition-all">
+                {insight.title}
+              </h3>
+              <p className="opacity-0 group-hover:opacity-100 transition-opacity text-sm">
+                {insight.description}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default ReturnBook;
+export default HomePage;
