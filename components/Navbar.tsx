@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" passHref className="text-xl font-bold hover:opacity-80">
-          Library System
+         Bura Library System
         </Link>
 
         {/* User Avatar with Dropdown */}

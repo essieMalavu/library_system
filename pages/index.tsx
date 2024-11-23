@@ -45,7 +45,7 @@ const HomePage = () => {
       title: "Return a Book",
       description:
         "Simplify the return process with automated updates and notifications.",
-      image: "/images/return.jpg",
+      image: "/images/",
     },
     // {
     //   title: "User Profiles",
@@ -61,7 +61,7 @@ const HomePage = () => {
       style={{ backgroundImage: "url('/images/books.jpg')" }}
     >
       <h1 className="text-4xl font-bold text-white mb-8 bg-opacity-50 p-4 rounded">
-        Welcome to Library System
+        Welcome to Bura Library System
       </h1>
       <div className="grid grid-cols-1 opacity-70 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
         {insights.map((insight, index) => (
@@ -76,14 +76,14 @@ const HomePage = () => {
             ></div>
 
             {/* Insight Overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 group-hover:bg-opacity-70 transition-all duration-300"></div>
+            <div className="absolute inset-0  group-hover:bg-opacity-70 transition-all duration-300"></div>
 
             {/* Insight Content */}
-            <div className="relative flex flex-col items-center justify-center h-full p-4 text-white text-center">
+            <div className="relative flex flex-col items-center justify-center h-full p-4 text-black text-center">
               <h3 className="text-xl font-semibold mb-2 group-hover:text-2xl transition-all">
                 {insight.title}
               </h3>
-              <p className="opacity-0 group-hover:opacity-100 transition-opacity text-sm">
+              <p className=" group-hover:opacity-100 transition-opacity text-sm">
                 {insight.description}
               </p>
             </div>
