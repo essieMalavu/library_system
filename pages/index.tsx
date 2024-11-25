@@ -27,7 +27,6 @@ const HomePage = () => {
     );
   }
 
-  // Insights data
   const insights = [
     {
       title: "Manage Books",
@@ -45,51 +44,64 @@ const HomePage = () => {
       title: "Return a Book",
       description:
         "Simplify the return process with automated updates and notifications.",
-      image: "/images/",
+      image: "/images/return-books.jpg",
     },
-    // {
-    //   title: "User Profiles",
-    //   description:
-    //     "Manage user accounts with detailed borrowing history and account settings.",
-    //   image: "/images/user-profiles.jpg",
-    // },
   ];
 
   return (
-    <div
-      className="flex flex-col items-center opacity-40 justify-center min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/books.jpg')" }}
-    >
-      <h1 className="text-4xl font-bold text-white mb-8 bg-opacity-50 p-4 rounded">
-        Welcome to Bura Library System
-      </h1>
-      <div className="grid grid-cols-1 opacity-70 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-        {insights.map((insight, index) => (
-          <div
-            key={index}
-            className="relative group w-80 h-60 bg-gray-100 rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
-          >
-            {/* Insight Background */}
+    <div className="flex flex-col min-h-screen">
+      <main
+        className="flex-grow flex flex-col items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/books.jpg')" }}
+      >
+        <h1 className="text-4xl font-bold text-white mb-8 bg-opacity-50 p-4 rounded">
+          Welcome to Bura Library System
+        </h1>
+        <div className="grid grid-cols-1 opacity-70 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+          {insights.map((insight, index) => (
             <div
-              className="absolute inset-0 bg-cover bg-center  group-hover:opacity-90 transition-opacity"
-              style={{ backgroundImage: `url('${insight.image}')` }}
-            ></div>
-
-            {/* Insight Overlay */}
-            <div className="absolute inset-0  group-hover:bg-opacity-70 transition-all duration-300"></div>
-
-            {/* Insight Content */}
-            <div className="relative flex flex-col items-center justify-center h-full p-4 text-black text-center">
-              <h3 className="text-xl font-semibold mb-2 group-hover:text-2xl transition-all">
-                {insight.title}
-              </h3>
-              <p className=" group-hover:opacity-100 transition-opacity text-sm">
-                {insight.description}
-              </p>
+              key={index}
+              className="relative group w-80 h-60 bg-gray-100 rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
+            >
+              <div
+                className="absolute inset-0 bg-cover bg-center group-hover:opacity-90 transition-opacity"
+                style={{ backgroundImage: `url('${insight.image}')` }}
+              ></div>
+              <div className="absolute inset-0 group-hover:bg-opacity-70 transition-all duration-300"></div>
+              <div className="relative flex flex-col items-center justify-center h-full p-4 text-black text-center">
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-2xl transition-all">
+                  {insight.title}
+                </h3>
+                <p className="group-hover:opacity-100 transition-opacity text-sm">
+                  {insight.description}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </main>
+      <footer className="bg-gray-800 text-white py-4">
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-4">
+          <p className="text-sm">&copy; {new Date().getFullYear()} Bura Library System. All rights reserved.</p>
+          <ul className="flex space-x-4 mt-2 md:mt-0">
+            <li>
+              <a href="/about" className="hover:underline">
+                About Us
+              </a>
+            </li>
+            <li>
+              <a href="/contact" className="hover:underline">
+                Contact
+              </a>
+            </li>
+            <li>
+              <a href="/terms" className="hover:underline">
+                Terms of Service
+              </a>
+            </li>
+          </ul>
+        </div>
+      </footer>
     </div>
   );
 };

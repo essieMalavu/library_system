@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-black-600 text-white fixed w-full z-10 top-0 shadow">
+    <nav className="bg-black text-white fixed w-full z-10 top-0 shadow">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" passHref className="text-xl font-bold hover:opacity-80">
