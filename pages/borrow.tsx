@@ -20,6 +20,7 @@ const BorrowBook = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [bookId, setBookId] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -54,7 +55,12 @@ const BorrowBook = () => {
   const validateUser = async (id: string): Promise<boolean> => {
     try {
       const userDoc = await getDoc(doc(db, "users", id));
-      return userDoc.exists();
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setUserName(userData.name); // Set the user's name
+        return true;
+      }
+      return false;
     } catch (error) {
       console.error("Error validating user:", error);
       return false;
@@ -90,6 +96,7 @@ const BorrowBook = () => {
       const borrowData = {
         bookId,
         userId,
+        userName,
         borrowDate: new Date(),
         expectedReturnDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks later
       };
@@ -101,6 +108,7 @@ const BorrowBook = () => {
       setSuccessMessage(`Successfully borrowed "${selectedBook.title}".`);
       setBookId("");
       setUserId("");
+      setUserName(""); // Clear the user name
     } catch (error) {
       console.error("Error borrowing book:", error);
       setErrorMessage("An error occurred. Please try again.");
@@ -151,7 +159,7 @@ const BorrowBook = () => {
               </select>
             </div>
 
-            {/* User ID Input */}
+            {/* User Input */}
             <div className="bg-white shadow-md rounded-md p-6 mb-8">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Enter User ID
@@ -163,6 +171,11 @@ const BorrowBook = () => {
                 onChange={(e) => setUserId(e.target.value)}
                 className="w-full px-4 py-2 text-black mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {userName && (
+                <p className="text-green-600 mt-2">
+                  User Name: <strong>{userName}</strong>
+                </p>
+              )}
             </div>
 
             {/* Borrow Button */}

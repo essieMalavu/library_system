@@ -4,7 +4,6 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-
 const Navbar: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -12,11 +11,10 @@ const Navbar: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-    return () => unsubscribe(); // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   const toggleMenu = () => {
@@ -32,39 +30,44 @@ const Navbar: React.FC = () => {
     router.push("/login");
   };
 
+  const handleProtectedNavigation = (path: string) => {
+    if (user) {
+      router.push(path);
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
     <nav className="bg-black text-white fixed w-full z-10 top-0 shadow">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" passHref className="text-xl font-bold hover:opacity-80">
-         Bura Library System
+          Bura Library System
         </Link>
 
         {/* User Avatar with Dropdown */}
         <div className="flex items-center space-x-6">
           {/* Links */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/books"
-              passHref
+            <button
+              onClick={() => handleProtectedNavigation("/books")}
               className="text-sm hover:text-gray-200"
             >
               Manage Books
-            </Link>
-            <Link
-              href="/borrow"
-              passHref
+            </button>
+            <button
+              onClick={() => handleProtectedNavigation("/borrow")}
               className="text-sm hover:text-gray-200"
             >
               Borrow a Book
-            </Link>
-            <Link
-              href="/return"
-              passHref
+            </button>
+            <button
+              onClick={() => handleProtectedNavigation("/return")}
               className="text-sm hover:text-gray-200"
             >
               Return a Book
-            </Link>
+            </button>
           </div>
 
           {/* Avatar */}
@@ -95,7 +98,7 @@ const Navbar: React.FC = () => {
                     {user.displayName || user.email}
                   </div>
                   <Link
-                    href="/profile"
+                    href="/Profiledisplay"
                     passHref
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
@@ -166,27 +169,24 @@ const Navbar: React.FC = () => {
         {/* Mobile Links */}
         {isOpen && (
           <div className="absolute top-16 left-0 w-full bg-blue-600 z-10 flex flex-col items-center space-y-4 py-4">
-            <Link
-              href="/books"
-              passHref
+            <button
+              onClick={() => handleProtectedNavigation("/books")}
               className="block text-sm text-white hover:text-gray-200"
             >
               Manage Books
-            </Link>
-            <Link
-              href="/borrow"
-              passHref
+            </button>
+            <button
+              onClick={() => handleProtectedNavigation("/borrow")}
               className="block text-sm text-white hover:text-gray-200"
             >
               Borrow a Book
-            </Link>
-            <Link
-              href="/return"
-              passHref
+            </button>
+            <button
+              onClick={() => handleProtectedNavigation("/return")}
               className="block text-sm text-white hover:text-gray-200"
             >
               Return a Book
-            </Link>
+            </button>
           </div>
         )}
       </div>

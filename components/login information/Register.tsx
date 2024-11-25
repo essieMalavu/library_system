@@ -27,7 +27,7 @@ const Register = () => {
         createdAt: new Date().toISOString(),
       });
 
-      router.push("/login");
+      router.push("/profile");
     } catch (err: any) {
       console.error("Error registering user:", err);
       setError(err.message || "Failed to register. Please try again.");
