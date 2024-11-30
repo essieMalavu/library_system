@@ -1,119 +1,124 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link"; // Import Link
-import { auth, db } from "@/firebase/firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db, auth } from "@/firebase/firebaseConfig"; // Ensure Firebase is configured
 import { doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    if (!name || !email || !password || !phone) {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const userId = userCredential.user.uid;
 
-      await setDoc(doc(db, "users", userId), {
-        uid: userId,
-        email,
-        createdAt: new Date().toISOString(),
-      });
+      await setDoc(doc(db, "users", userId), { name, email, phone });
 
-      router.push("/profile");
-    } catch (err: any) {
-      console.error("Error registering user:", err);
-      setError(err.message || "Failed to register. Please try again.");
-    } finally {
-      setLoading(false);
+      setSuccessMessage("Registration successful!");
+      setErrorMessage("");
+      setName("");
+      setEmail("");
+      setPassword("");
+      setPhone("");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Registration failed. Try again.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Register for Bura Library
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
+      <div className="w-full max-w-md p-8 bg-gray-900 rounded-lg shadow-2xl border border-gray-700">
+        <h1 className="text-3xl font-bold text-center text-teal-400 glow mb-6">
+          Register Now
         </h1>
-        {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
+        {successMessage && (
+          <div className="bg-green-800 p-4 mb-4 rounded text-green-200">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div className="bg-red-800 p-4 mb-4 rounded text-red-200">
+            {errorMessage}
+          </div>
+        )}
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
+            <label className="block mb-1 text-sm">Full Name</label>
             <input
-              type="email"
-              id="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={loading}
-              className="w-full mt-1 text-black px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded focus:ring-2 focus:ring-teal-500 outline-none transition"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
+            <label className="block mb-1 text-sm">Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded focus:ring-2 focus:ring-teal-500 outline-none transition"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-sm">Password</label>
             <input
               type="password"
-              id="password"
-              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={loading}
-              className="w-full text-black mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+              placeholder="Enter your password"
+              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded focus:ring-2 focus:ring-teal-500 outline-none transition"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-sm">Phone Number</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter your phone number"
+              className="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded focus:ring-2 focus:ring-teal-500 outline-none transition"
             />
           </div>
           <button
             type="submit"
-            disabled={loading}
-            className={`w-full flex justify-center items-center py-2 px-4 text-white font-semibold rounded-md ${
-              loading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
-            }`}
+            className="w-full py-2 mt-4 bg-teal-500 rounded-lg hover:bg-teal-600 focus:ring-2 focus:ring-teal-400 shadow-lg transition-all"
           >
-            {loading ? (
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 100 8v4a8 8 0 01-8-8z"
-                ></path>
-              </svg>
-            ) : (
-              "Register"
-            )}
+            Register
           </button>
         </form>
-        <p className="text-sm text-center text-gray-600 mt-4">
+        <p className="mt-4 text-sm text-center">
           Already have an account?{" "}
-          <Link href="/login" className="text-indigo-600 hover:underline font-medium">
-            Login
-          </Link>
+          <a
+            href="/login"
+            className="text-teal-400 hover:underline hover:text-teal-500"
+          >
+            Login here
+          </a>
         </p>
       </div>
     </div>

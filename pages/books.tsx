@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { addBook } from "@/components/bookService";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
+import { FiPlusCircle, FiBook, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
 interface Book {
   id: string;
@@ -14,110 +15,123 @@ const Books = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [newBook, setNewBook] = useState({ title: "", author: "" });
 
+  // Fetch books in real time
   useEffect(() => {
-    const fetchBooks = async () => {
-      const querySnapshot = await getDocs(collection(db, "books"));
-      const booksList = querySnapshot.docs.map((doc) => ({
-        id: doc.id, // Use the `doc.id` as the `id` field.
-        ...(doc.data() as Omit<Book, "id">), // Spread only the other properties.
+    const booksCollectionRef = collection(db, "books");
+    const booksQuery = query(booksCollectionRef);
+
+    const unsubscribe = onSnapshot(booksQuery, (snapshot) => {
+      const booksList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Book, "id">),
       }));
       setBooks(booksList);
-    };
+    });
 
-    fetchBooks();
+    return () => unsubscribe();
   }, []);
 
   const handleAddBook = async () => {
     if (newBook.title && newBook.author) {
       await addBook({
-        ...newBook, borrowed: false,
-        id: ""
+        ...newBook,
+        borrowed: false,
+        id: "",
       });
       setNewBook({ title: "", author: "" });
       alert("Book added successfully.");
-
-      // Refetch the updated list of books
-      const querySnapshot = await getDocs(collection(db, "books"));
-      const booksList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Book, "id">),
-      }));
-      setBooks(booksList);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">
-          Library Books
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 py-10 px-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Page Title */}
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
+          📚 Library Books
         </h1>
 
         {/* Add Book Form */}
-        <div className="bg-white shadow-md rounded-md p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <div className="bg-gradient-to-br from-gray-200 to-gray-300 p-8 rounded-lg shadow-md mb-12">
+          <h2 className="text-2xl font-semibold text-gray-700 mb-6 flex items-center gap-2">
+            <FiPlusCircle className="text-gray-600" />
             Add a New Book
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <input
               type="text"
-              placeholder="Title of the Book"
+              placeholder="Book Title"
               value={newBook.title}
               onChange={(e) =>
                 setNewBook({ ...newBook, title: e.target.value })
               }
-              className="border border-gray-300 text-black rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 text-gray-800 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm"
             />
             <input
               type="text"
-              placeholder="Author of the Book"
+              placeholder="Author Name"
               value={newBook.author}
               onChange={(e) =>
                 setNewBook({ ...newBook, author: e.target.value })
               }
-              className="border border-gray-300 text-black rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 text-gray-800 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 shadow-sm"
             />
           </div>
           <button
             onClick={handleAddBook}
-            className="mt-4 w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            className="mt-6 w-full sm:w-auto bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg shadow hover:bg-gray-700 hover:scale-105 transform transition-transform"
           >
             Add Book
           </button>
         </div>
 
         {/* Book List */}
-        <div className="bg-white shadow-md rounded-md p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            Books in the Library
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+            <FiBook className="text-gray-600" />
+            Available Books
           </h2>
           {books.length > 0 ? (
-            <ul className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {books.map((book) => (
-                <li
+                <div
                   key={book.id}
-                  className="flex items-center justify-between bg-gray-50 px-4 py-3 rounded-md shadow-sm"
+                  className="relative bg-gray-100 p-6 rounded-lg shadow hover:shadow-lg hover:scale-105 transform transition-all"
                 >
-                  <div>
-                    <p className="text-lg font-medium text-gray-800">
-                      {book.title}
-                    </p>
-                    <p className="text-sm text-gray-600">by {book.author}</p>
+                  {/* Book Title */}
+                  <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                    {book.title}
+                  </h3>
+
+                  {/* Author */}
+                  <p className="text-gray-600 mb-4">
+                    <span className="font-semibold">Author:</span> {book.author}
+                  </p>
+
+                  {/* Status */}
+                  <div className="absolute top-4 right-4 flex items-center gap-2">
+                    {book.borrowed ? (
+                      <FiXCircle className="text-red-500" size={20} />
+                    ) : (
+                      <FiCheckCircle className="text-green-500" size={20} />
+                    )}
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        book.borrowed
+                          ? "bg-red-100 text-red-700"
+                          : "bg-green-100 text-green-700"
+                      }`}
+                    >
+                      {book.borrowed ? "Borrowed" : "Available"}
+                    </span>
                   </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      book.borrowed
-                        ? "bg-red-100 text-red-600"
-                        : "bg-green-100 text-green-600"
-                    }`}
-                  >
-                    {book.borrowed ? "Borrowed" : "Available"}
-                  </span>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
-            <p className="text-gray-600">No books available in the library.</p>
+            <p className="text-gray-500 text-center text-lg mt-6">
+              No books available in the library. 📖
+            </p>
           )}
         </div>
       </div>

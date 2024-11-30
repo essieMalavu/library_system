@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useRouter } from "next/router"; // Import the useRouter hook
-import { db } from "@/firebase/firebaseConfig"; // Adjust the path as per your project structure
+import { useRouter } from "next/router"; 
+import { db } from "@/firebase/firebaseConfig"; 
 import { doc, setDoc } from "firebase/firestore";
 
 const ProfileSetup = () => {
@@ -33,25 +33,22 @@ const ProfileSetup = () => {
     try {
       const userId = email;
 
-      // Store data in Firestore
       await setDoc(doc(db, "users", userId), {
         name,
         email,
         phone,
-        profilePicture: profilePicture ? profilePicture.name : null, // For simplicity
+        profilePicture: profilePicture ? profilePicture.name : null, 
       });
 
       setSuccessMessage("Profile setup completed successfully!");
       setErrorMessage("");
 
-      // Reset form fields
       setName("");
       setEmail("");
       setPhone("");
       setProfilePicture(null);
       setPreview(null);
 
-      // Redirect to login page after a short delay
       setTimeout(() => {
         router.push("/login"); // Adjust the path as per your login page
       }, 1500); // Delay for user to see the success message
@@ -68,7 +65,6 @@ const ProfileSetup = () => {
           Profile Setup
         </h1>
 
-        {/* Success & Error Messages */}
         {successMessage && (
           <div className="mb-4 p-4 text-green-600 bg-green-100 rounded">
             {successMessage}
@@ -80,9 +76,7 @@ const ProfileSetup = () => {
           </div>
         )}
 
-        {/* Profile Setup Form */}
         <form onSubmit={handleSubmit}>
-          {/* Name Input */}
           <div className="mb-4">
             <label
               htmlFor="name"
@@ -100,7 +94,6 @@ const ProfileSetup = () => {
             />
           </div>
 
-          {/* Email Input */}
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -118,7 +111,6 @@ const ProfileSetup = () => {
             />
           </div>
 
-          {/* Phone Number Input */}
           <div className="mb-4">
             <label
               htmlFor="phone"
@@ -136,7 +128,6 @@ const ProfileSetup = () => {
             />
           </div>
 
-          {/* Profile Picture Upload */}
           <div className="mb-4">
             <label
               htmlFor="profilePicture"
@@ -160,7 +151,6 @@ const ProfileSetup = () => {
             )}
           </div>
 
-          {/* Submit Button */}
           <div className="text-center">
             <button
               type="submit"

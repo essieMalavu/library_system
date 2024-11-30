@@ -1,109 +1,102 @@
-import { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useState } from "react";
 import { useRouter } from "next/router";
+import { auth } from "@/firebase/firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-const HomePage = () => {
-  const [loading, setLoading] = useState(true);
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.push("/login");
-      } else {
-        setLoading(false);
-      }
-    });
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-    return () => unsubscribe();
-  }, [router]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  const insights = [
-    {
-      title: "Manage Books",
-      description:
-        "Easily add, update, and organize your book collection for seamless management.",
-      image: "/images/manage-books.jpg",
-    },
-    {
-      title: "Borrow a Book",
-      description:
-        "Enable users to borrow books effortlessly with real-time tracking and history.",
-      image: "/images/borrow-books.jpg",
-    },
-    {
-      title: "Return a Book",
-      description:
-        "Simplify the return process with automated updates and notifications.",
-      image: "/images/return-books.jpg",
-    },
-  ];
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/dashboard"); // Redirect to dashboard on success
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError("Invalid email or password. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main
-        className="flex-grow flex flex-col items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/books.jpg')" }}
-      >
-        <h1 className="text-4xl font-bold text-white mb-8 bg-opacity-50 p-4 rounded">
-          Welcome to Bura Library System
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-purple-900 relative overflow-hidden">
+      {/* Animated Background Overlay */}
+      <div className="absolute inset-0">
+        <div className="absolute bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-3xl h-96 w-96 rounded-full animate-pulse top-20 left-20"></div>
+        <div className="absolute bg-gradient-to-br from-green-400 to-blue-600 opacity-20 blur-3xl h-96 w-96 rounded-full animate-pulse bottom-20 right-20"></div>
+      </div>
+
+      {/* Glassmorphism Login Container */}
+      <div className="relative w-full max-w-md bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-lg border border-white/20">
+        <h1 className="text-3xl font-extrabold text-center text-white mb-6">
+          Welcome to <span className="text-indigo-400">Bura Library</span>
         </h1>
-        <div className="grid grid-cols-1 opacity-70 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-          {insights.map((insight, index) => (
-            <div
-              key={index}
-              className="relative group w-80 h-60 bg-gray-100 rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
-            >
-              <div
-                className="absolute inset-0 bg-cover bg-center group-hover:opacity-90 transition-opacity"
-                style={{ backgroundImage: `url('${insight.image}')` }}
-              ></div>
-              <div className="absolute inset-0 group-hover:bg-opacity-70 transition-all duration-300"></div>
-              <div className="relative flex flex-col items-center justify-center h-full p-4 text-black text-center">
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-2xl transition-all">
-                  {insight.title}
-                </h3>
-                <p className="group-hover:opacity-100 transition-opacity text-sm">
-                  {insight.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
-      <footer className="bg-gray-800 text-white py-4">
-        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-4">
-          <p className="text-sm">&copy; {new Date().getFullYear()} Bura Library System. All rights reserved.</p>
-          <ul className="flex space-x-4 mt-2 md:mt-0">
-            <li>
-              <a href="/about" className="hover:underline">
-                About Us
-              </a>
-            </li>
-            <li>
-              <a href="/contact" className="hover:underline">
-                Contact
-              </a>
-            </li>
-            <li>
-              <a href="/terms" className="hover:underline">
-                Terms of Service
-              </a>
-            </li>
-          </ul>
-        </div>
-      </footer>
+        {error && (
+          <p className="text-sm text-red-400 mb-4 text-center">{error}</p>
+        )}
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-200">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              className="w-full mt-2 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-200">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              className="w-full mt-2 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 text-white font-bold rounded-lg text-lg transition-transform ${
+              loading
+                ? "bg-indigo-500 opacity-50 cursor-not-allowed"
+                : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:scale-105"
+            }`}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+        <p className="text-sm text-center text-gray-300 mt-6">
+          Don’t have an account?{" "}
+          <a
+            href="/register"
+            className="text-indigo-300 hover:text-pink-400 underline transition"
+          >
+            Register here
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
 
-export default HomePage;
+export default Login;

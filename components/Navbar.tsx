@@ -17,65 +17,62 @@ const Navbar: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push("/login");
+    router.push("/");
   };
 
   const handleProtectedNavigation = (path: string) => {
     if (user) {
       router.push(path);
     } else {
-      router.push("/login");
+      router.push("/");
     }
   };
 
   return (
-    <nav className="bg-black text-white fixed w-full z-10 top-0 shadow">
+    <nav className="bg-black/70 backdrop-blur-md text-white  w-full z-10 top-0 shadow-md">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
-        <Link href="/" passHref className="text-xl font-bold hover:opacity-80">
-          Bura Library System
+        <Link href="/dashboard" passHref
+           className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-600 hover:opacity-90">
+            Bura Library System
         </Link>
 
-        {/* User Avatar with Dropdown */}
+        {/* User Actions */}
         <div className="flex items-center space-x-6">
-          {/* Links */}
+          {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-6">
             <button
               onClick={() => handleProtectedNavigation("/books")}
-              className="text-sm hover:text-gray-200"
+              className="text-sm hover:text-cyan-400 transition"
             >
               Manage Books
             </button>
             <button
               onClick={() => handleProtectedNavigation("/borrow")}
-              className="text-sm hover:text-gray-200"
+              className="text-sm hover:text-cyan-400 transition"
             >
               Borrow a Book
             </button>
             <button
               onClick={() => handleProtectedNavigation("/return")}
-              className="text-sm hover:text-gray-200"
+              className="text-sm hover:text-cyan-400 transition"
             >
               Return a Book
             </button>
           </div>
 
-          {/* Avatar */}
-          {user && (
+          {/* User Avatar */}
+          {user ? (
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-blue-600 font-bold uppercase focus:outline-none"
+                className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-purple-600 rounded-full flex items-center justify-center text-white uppercase focus:outline-none shadow-lg hover:scale-105 transition-transform"
                 title={user.displayName || user.email}
               >
                 {user.photoURL ? (
@@ -85,44 +82,33 @@ const Navbar: React.FC = () => {
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
-                  user.displayName
-                    ?.charAt(0)
-                    .toUpperCase() || user.email.charAt(0).toUpperCase()
+                  user.displayName?.charAt(0).toUpperCase() ||
+                  user.email.charAt(0).toUpperCase()
                 )}
               </button>
-
               {/* Dropdown Menu */}
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
-                  <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                <div className="absolute right-0 mt-2 w-48 bg-black/80 backdrop-blur-lg rounded-lg shadow-lg">
+                  <div className="px-4 py-2 text-sm text-gray-200 border-b border-gray-700">
                     {user.displayName || user.email}
                   </div>
-                  <Link
-                    href="/Profiledisplay"
-                    passHref
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Profile
+                  <Link href="/Profiledisplay" passHref
+                    className="block px-4 py-2 text-sm text-gray-200 hover:bg-cyan-600 hover:text-white transition">
+                      Profile
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="w-full text-left block px-4 py-2 text-sm text-gray-200 hover:bg-cyan-600 hover:text-white transition"
                   >
                     Logout
                   </button>
                 </div>
               )}
             </div>
-          )}
-
-          {/* Login Button */}
-          {!user && (
-            <Link
-              href="/login"
-              passHref
-              className="block px-4 py-2 bg-white text-blue-600 font-bold rounded-md hover:bg-gray-100"
-            >
-              Login
+          ) : (
+            <Link href="/login" passHref
+               className="px-4 py-2 bg-gradient-to-r from-cyan-400 to-purple-600 text-white rounded-md hover:shadow-lg hover:scale-105 transition-transform">
+                Login
             </Link>
           )}
         </div>
@@ -165,31 +151,31 @@ const Navbar: React.FC = () => {
             </svg>
           )}
         </button>
-
-        {/* Mobile Links */}
-        {isOpen && (
-          <div className="absolute top-16 left-0 w-full bg-blue-600 z-10 flex flex-col items-center space-y-4 py-4">
-            <button
-              onClick={() => handleProtectedNavigation("/books")}
-              className="block text-sm text-white hover:text-gray-200"
-            >
-              Manage Books
-            </button>
-            <button
-              onClick={() => handleProtectedNavigation("/borrow")}
-              className="block text-sm text-white hover:text-gray-200"
-            >
-              Borrow a Book
-            </button>
-            <button
-              onClick={() => handleProtectedNavigation("/return")}
-              className="block text-sm text-white hover:text-gray-200"
-            >
-              Return a Book
-            </button>
-          </div>
-        )}
       </div>
+
+      {/* Mobile Links */}
+      {isOpen && (
+        <div className="absolute top-16 left-0 w-full bg-gradient-to-b from-black via-gray-900 to-gray-800 z-10 flex flex-col items-center space-y-4 py-4">
+          <button
+            onClick={() => handleProtectedNavigation("/books")}
+            className="block text-sm text-white hover:text-cyan-400 transition"
+          >
+            Manage Books
+          </button>
+          <button
+            onClick={() => handleProtectedNavigation("/borrow")}
+            className="block text-sm text-white hover:text-cyan-400 transition"
+          >
+            Borrow a Book
+          </button>
+          <button
+            onClick={() => handleProtectedNavigation("/return")}
+            className="block text-sm text-white hover:text-cyan-400 transition"
+          >
+            Return a Book
+          </button>
+        </div>
+      )}
     </nav>
   );
 };

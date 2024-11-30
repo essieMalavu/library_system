@@ -1,92 +1,102 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { auth } from "@/firebase/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+// import { useState } from "react";
+// import { useRouter } from "next/router";
+// import { auth } from "@/firebase/firebaseConfig";
+// import { signInWithEmailAndPassword } from "firebase/auth";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+// const Login = () => {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [error, setError] = useState<string | null>(null);
+//   const [loading, setLoading] = useState(false);
+//   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+//   const handleLogin = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setLoading(true);
+//     setError(null);
 
-    try {
-      // Authenticate the user with Firebase
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/"); // Redirect to dashboard on success
-    } catch (err: any) {
-      console.error("Login error:", err);
-      setError("Invalid email or password. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+//     try {
+//       await signInWithEmailAndPassword(auth, email, password);
+//       router.push("/"); // Redirect to dashboard on success
+//     } catch (err: any) {
+//       console.error("Login error:", err);
+//       setError("Invalid email or password. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Login to Bura Library</h1>
-        {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={loading}
-              className="w-full text-black mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={loading}
-              className="w-full text-black mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-2 px-4 text-white font-semibold rounded-md ${
-              loading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500"
-            }`}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-        <p className="text-sm text-center text-gray-600 mt-4">
-          Don’t have an account?{" "}
-          <a
-            href="/register"
-            className="text-indigo-600 hover:underline font-medium"
-          >
-            Register
-          </a>
-        </p>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-purple-900 relative overflow-hidden">
+//       {/* Animated Background Overlay */}
+//       <div className="absolute inset-0">
+//         <div className="absolute bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-20 blur-3xl h-96 w-96 rounded-full animate-pulse top-20 left-20"></div>
+//         <div className="absolute bg-gradient-to-br from-green-400 to-blue-600 opacity-20 blur-3xl h-96 w-96 rounded-full animate-pulse bottom-20 right-20"></div>
+//       </div>
 
-export default Login;
+//       {/* Glassmorphism Login Container */}
+//       <div className="relative w-full max-w-md bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-lg border border-white/20">
+//         <h1 className="text-3xl font-extrabold text-center text-white mb-6">
+//           Welcome to <span className="text-indigo-400">Bura Library</span>
+//         </h1>
+//         {error && (
+//           <p className="text-sm text-red-400 mb-4 text-center">{error}</p>
+//         )}
+//         <form onSubmit={handleLogin} className="space-y-6">
+//           <div>
+//             <label htmlFor="email" className="block text-sm font-medium text-gray-200">
+//               Email
+//             </label>
+//             <input
+//               type="email"
+//               id="email"
+//               placeholder="Enter your email"
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               required
+//               disabled={loading}
+//               className="w-full mt-2 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
+//             />
+//           </div>
+//           <div>
+//             <label htmlFor="password" className="block text-sm font-medium text-gray-200">
+//               Password
+//             </label>
+//             <input
+//               type="password"
+//               id="password"
+//               placeholder="Enter your password"
+//               value={password}
+//               onChange={(e) => setPassword(e.target.value)}
+//               required
+//               disabled={loading}
+//               className="w-full mt-2 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
+//             />
+//           </div>
+//           <button
+//             type="submit"
+//             disabled={loading}
+//             className={`w-full py-3 text-white font-bold rounded-lg text-lg transition-transform ${
+//               loading
+//                 ? "bg-indigo-500 opacity-50 cursor-not-allowed"
+//                 : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:scale-105"
+//             }`}
+//           >
+//             {loading ? "Logging in..." : "Login"}
+//           </button>
+//         </form>
+//         <p className="text-sm text-center text-gray-300 mt-6">
+//           Don’t have an account?{" "}
+//           <a
+//             href="/register"
+//             className="text-indigo-300 hover:text-pink-400 underline transition"
+//           >
+//             Register here
+//           </a>
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Login;
